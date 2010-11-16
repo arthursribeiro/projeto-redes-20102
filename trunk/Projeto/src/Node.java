@@ -51,11 +51,13 @@ public class Node {
 			VectorPair pair = distanceVector.getPairById(node.getId());
 			pair.setDistance(distance);
 		}
+		this.notifyVector();
 	}
 
 	public void updateVector(DistanceVector newVector, int sourceId) {
 		VectorPair pair = distanceVector.getPairById(sourceId);
 		distanceVector.merge(newVector, pair.getDistance());
+		this.notifyVector();
 	}
 
 	public void setId(int id) {
