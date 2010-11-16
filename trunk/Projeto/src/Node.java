@@ -11,7 +11,7 @@ public class Node {
 	private int port;
 	private String ip;
 	private DistanceVector distanceVector;
-	private Vector<Node> neighbors;
+	private Vector<NodeDescriptor> neighbors;
 	private Server server;
 
 	public Node(int id, int port, String ip) throws SocketException {
@@ -19,12 +19,12 @@ public class Node {
 		this.setPort(port);
 		this.setIp(ip);
 		this.distanceVector = new DistanceVector();
-		this.neighbors = new Vector<Node>();
+		this.neighbors = new Vector<NodeDescriptor>();
 		this.server = new Server(port, this);
 	}
 	
 	public void notifyVector() {
-		for (Node node : this.neighbors) {
+		for (NodeDescriptor node : this.neighbors) {
 			String ip = node.getIp();
 			int port = node.getPort();
 			try {
@@ -43,7 +43,7 @@ public class Node {
 		this.server.start();
 	}
 
-	public void addNeighbor(Node node, int distance) {
+	public void addNeighbor(NodeDescriptor node, int distance) {
 		if (!this.neighbors.contains(node)) {
 			this.neighbors.add(node);
 			this.distanceVector.append(new VectorPair(node.getId(), distance));
