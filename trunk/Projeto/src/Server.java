@@ -23,8 +23,8 @@ public class Server extends Thread {
 						buffer.length);
 				udpListener.receive(packet);
 				System.out.println("Package received!");
-				System.out.println(buffer);
-				String vectorString[] = buffer.toString().split(",");
+				System.out.println(new String(packet.getData()).trim());
+				String vectorString[] = (new String(packet.getData()).trim()).split(",");
 				int source = Integer.parseInt(vectorString[0]);
 				String vector[] = new String[vectorString.length - 1];
 				for (int i = 1; i < vectorString.length; i++) {
