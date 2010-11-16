@@ -46,6 +46,7 @@ public class Node {
 	}
 
 	public void addNeighbor(NodeDescriptor node, int distance) {
+		System.out.println(node.getId() + " " + distance);
 		if (!this.neighbors.contains(node)) {
 			this.neighbors.add(node);
 			this.distanceVector.append(new VectorPair(node.getId(), distance));
@@ -58,8 +59,9 @@ public class Node {
 
 	public void updateVector(DistanceVector newVector, int sourceId) {
 		VectorPair pair = distanceVector.getPairById(sourceId);
-		distanceVector.merge(newVector, pair.getDistance());
-		this.notifyVector();
+		if (distanceVector.merge(newVector, pair.getDistance(), this)) {
+			this.notifyVector();
+		}
 	}
 
 	public void setId(int id) {
@@ -84,6 +86,10 @@ public class Node {
 
 	public String getIp() {
 		return ip;
+	}
+	
+	public String toString() {
+		return "Node: (" + id + ", " + ip + ", " + port + ")";
 	}
 
 }

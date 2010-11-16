@@ -42,21 +42,32 @@ public class DistanceVector {
 		this.vector.add(pair);
 	}
 
-	public void merge(DistanceVector newVector, int sourceDistance) {
+	public boolean merge(DistanceVector newVector, int sourceDistance,
+			Node owner) {
+		boolean changed = false;
+		System.out.println(owner.getId() + " - " + sourceDistance);
 		for (int i = 0; i < newVector.size(); i++) {
 			VectorPair pair = newVector.get(i);
+			if (pair.getId() == owner.getId()) {
+				continue;
+			}
 			if (this.contains(pair.getId())) {
 				VectorPair existingPair = this.getPairById(pair.getId());
-				if (existingPair.getDistance() >= pair.getDistance()) {
+				if (pair.getDistance() + sourceDistance < existingPair
+						.getDistance()) {
 					existingPair.setDistance(pair.getDistance()
 							+ sourceDistance);
+					changed = true;
 				}
 			} else {
-				this.append(pair);
+				this.append(new VectorPair(pair.getId(), pair.getDistance()
+						+ sourceDistance));
+				changed = true;
 			}
 		}
+		return changed;
 	}
-	
+
 	public String toString() {
 		String result = "";
 		for (int i = 0; i < this.size(); i++) {

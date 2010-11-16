@@ -34,6 +34,9 @@ public class NodeDescriptor {
 	public void setPort(int port) {
 		this.port = port;
 	}
-
 	
+	public String toString() {
+		return "(" + id + ", " + ip + ", " + port + ")";
+	}
+
 }
