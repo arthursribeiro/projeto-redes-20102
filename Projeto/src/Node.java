@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.util.Vector;
@@ -28,9 +29,17 @@ public class Node {
 			String ip = node.getIp();
 			int port = node.getPort();
 			try {
-				DatagramSocket socket = new DatagramSocket(new InetSocketAddress(ip, port));
+				System.out.println("Ip: " + ip + ", porta = " + port); 
+				
+				DatagramSocket socket = new DatagramSocket();
+				
+				InetAddress ipAddress = InetAddress.getByName(ip);
+				
 				byte vector[] = (id + "," + this.distanceVector.toString()).getBytes();
-				socket.send(new DatagramPacket(vector, vector.length));
+				
+				DatagramPacket sendPacket = new DatagramPacket(vector, vector.length, ipAddress, port);
+				
+				socket.send(sendPacket);
 			} catch (SocketException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
