@@ -28,16 +28,10 @@ public class Node {
 			String ip = node.getIp();
 			int port = node.getPort();
 			try {
-				System.out.println("Ip: " + ip + ", porta = " + port); 
-				
 				DatagramSocket socket = new DatagramSocket();
-				
 				InetAddress ipAddress = InetAddress.getByName(ip);
-				
 				byte vector[] = (id + "," + this.distanceVector.toString()).getBytes();
-				
 				DatagramPacket sendPacket = new DatagramPacket(vector, vector.length, ipAddress, port);
-				
 				socket.send(sendPacket);
 			} catch (SocketException e) {
 				e.printStackTrace();
