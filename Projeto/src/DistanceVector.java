@@ -56,5 +56,9 @@ public class DistanceVector {
 			}
 		}
 	}
+	
+	public String toString() {
+		return this.vector.toString();
+	}
 
 }
