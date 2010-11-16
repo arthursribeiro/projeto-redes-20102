@@ -35,7 +35,7 @@ public class DistanceVector {
 				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	public void append(VectorPair pair) {
@@ -58,7 +58,14 @@ public class DistanceVector {
 	}
 	
 	public String toString() {
-		return this.vector.toString();
+		String result = "";
+		for (int i = 0; i < this.size(); i++) {
+			result += this.vector.get(i);
+			if (i < this.size() - 1) {
+				result += ",";
+			}
+		}
+		return result;
 	}
 
 }
