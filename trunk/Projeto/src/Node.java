@@ -1,3 +1,7 @@
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.util.Vector;
 
@@ -16,7 +20,23 @@ public class Node {
 		this.setIp(ip);
 		this.distanceVector = new DistanceVector();
 		this.neighbors = new Vector<Node>();
-		this.server = new Server(port);
+		this.server = new Server(port, this);
+	}
+	
+	public void notifyVector() {
+		for (Node node : this.neighbors) {
+			String ip = node.getIp();
+			int port = node.getPort();
+			try {
+				DatagramSocket socket = new DatagramSocket(new InetSocketAddress(ip, port));
+				byte vector[] = (id + "," + this.distanceVector.toString()).getBytes();
+				socket.send(new DatagramPacket(vector, vector.length));
+			} catch (SocketException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void start() {

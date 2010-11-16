@@ -23,5 +23,9 @@ public class VectorPair {
 	public void setDistance(int distance) {
 		this.distance = distance;
 	}
+	
+	public String toString() {
+		return "<" + id + ";" + distance + ">";
+	}
 
 }
