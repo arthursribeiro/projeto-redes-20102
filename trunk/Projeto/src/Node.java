@@ -10,17 +10,13 @@ public class Node {
 	private Vector<Node> neighbors;
 	private Server server;
 
-	public Node(int id, int port, String ip) {
+	public Node(int id, int port, String ip) throws SocketException {
 		this.setId(id);
 		this.setPort(port);
 		this.setIp(ip);
 		this.distanceVector = new DistanceVector();
 		this.neighbors = new Vector<Node>();
-		try {
-			this.server = new Server(ip, port);
-		} catch (SocketException e) {
-			e.printStackTrace();
-		}
+		this.server = new Server(port);
 	}
 
 	public void start() {

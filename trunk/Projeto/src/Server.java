@@ -1,17 +1,14 @@
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetSocketAddress;
 import java.net.SocketException;
 
-public class Server {
-	
-	private String ip;
+public class Server extends Thread {
+
 	private int port;
 	private DatagramSocket udpListener;
 
-	public Server(String ip, int port) throws SocketException {
-		this.ip = ip;
+	public Server(int port) throws SocketException {
 		this.port = port;
 		this.udpListener = new DatagramSocket(port);
 	}
@@ -30,5 +27,5 @@ public class Server {
 			}
 		}
 	}
-	
+
 }
