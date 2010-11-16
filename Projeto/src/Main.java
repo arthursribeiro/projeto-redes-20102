@@ -58,13 +58,9 @@ public class Main {
 	        	str = in.readLine();
 		        String [] splitStr = str.split(" ");
 		        if(Integer.parseInt(splitStr[0]) == no.getId()) {
-		        	System.out.println("id do no = " + splitStr[0]);
-		        	System.out.println("id2 = " + splitStr[1]);
 		        	NodeDescriptor desc = new NodeDescriptor(Integer.parseInt(splitStr[1]), dados.get(splitStr[1])[1], Integer.parseInt(dados.get(splitStr[1])[0]));
 		        	no.addNeighbor(desc, Integer.parseInt(splitStr[2]));
 		        } else if(Integer.parseInt(splitStr[1]) == no.getId()) {
-		        	System.out.println("id do no = " + splitStr[1]);
-		        	System.out.println("id2 = " + splitStr[0]);
 		        	NodeDescriptor desc = new NodeDescriptor(Integer.parseInt(splitStr[0]), dados.get(splitStr[0])[1], Integer.parseInt(dados.get(splitStr[0])[0]));
 		        	no.addNeighbor(desc, Integer.parseInt(splitStr[2]));
 		        }
