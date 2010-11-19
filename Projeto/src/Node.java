@@ -3,10 +3,10 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Vector;
+
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.NoFixedFacet;
 
 public class Node {
 
@@ -17,6 +17,7 @@ public class Node {
 	private Vector<NodeDescriptor> neighbors;
 	private Server server;
 	private HashMap<Integer, Integer> distances;
+	Pinger pinger;
 
 	public Node(int id, int port, String ip) throws SocketException {
 		this.setId(id);
@@ -26,58 +27,24 @@ public class Node {
 		this.neighbors = new Vector<NodeDescriptor>();
 		this.server = new Server(port, this);
 		this.distances = new HashMap<Integer, Integer>();
+		this.pinger = new Pinger(this);
+		this.distanceVector.append(new VectorPair(id, 0));
+		this.distances.put(id, 0);
 	}
 
-	public void removeNeighbor(NodeDescriptor node) {
-		this.neighbors.remove(node);
-		this.distanceVector.removeById(node.getId());
+	public boolean isNeighbor(int id) {
+		for (NodeDescriptor node : this.neighbors) {
+			if (node.getId() == id) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
-	public void pingNeighbors() {
-		Vector<NodeDescriptor> toRemove = new Vector<NodeDescriptor>();
-		for (NodeDescriptor node : this.neighbors) {
-			String ip = node.getIp();
-			int port = node.getPort();
-			try {
-				InetAddress ipAddress = InetAddress.getByName(ip);
-				byte ping[] = ("ping," + node.getId()).getBytes();
-				DatagramSocket wait = new DatagramSocket();
-				DatagramPacket pingPacket = new DatagramPacket(ping,
-						ping.length, ipAddress, port);
-				System.out.println(">>>>>>>>>> ping? " + node.getId());
-				wait.send(pingPacket);
-				byte pong[] = new byte[12];
-				DatagramPacket pongPacket = new DatagramPacket(pong,
-						pong.length, ipAddress, port);
-				wait.setSoTimeout(1000);
-				try {
-					wait.receive(pongPacket);
-				} catch (SocketTimeoutException e) {
-					System.out.println("Timeout! Pong not received!");
-					wait.close();
-					toRemove.add(node);
-					continue;
-				}
-				String responseId = (new String(pongPacket.getData()).trim())
-						.split(",")[1];
-				System.out.println("<<<<<<<<<< Pong! " + responseId);
-			} catch (UnknownHostException e) {
-				e.printStackTrace();
-			} catch (SocketException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-		}
-		for (NodeDescriptor node : toRemove) {
-			this.removeNeighbor(node);
-		}
-	}
-
 	public void notifyVector() {
-		this.pingNeighbors();
+		System.out.println("Notifying " + this.distanceVector);
 		for (NodeDescriptor node : this.neighbors) {
+			System.out.println("Notifying for " + node);
 			String ip = node.getIp();
 			int port = node.getPort();
 			try {
@@ -94,29 +61,49 @@ public class Node {
 				e.printStackTrace();
 			}
 		}
-	} 
+	}
 
 	public void start() {
 		this.server.start();
+		this.pinger.start();
 	}
 
 	public void addNeighbor(NodeDescriptor node, int distance) {
 		this.distances.put(node.getId(), distance);
-		if (!this.neighbors.contains(node)) {
-			this.neighbors.add(node);
-			this.distanceVector.append(new VectorPair(node.getId(), distance));
-		} else {
-			VectorPair pair = distanceVector.getPairById(node.getId());
-			pair.setDistance(distance);
-		}
-		this.notifyVector();
+		this.pinger.addNode(node);
 	}
 
 	public void updateVector(DistanceVector newVector, int sourceId) {
-		if (distanceVector.merge(newVector, sourceId, distances.get(sourceId), this)) {
+		if (distanceVector.merge(newVector, sourceId, distances.get(sourceId),
+				this)) {
 			System.out.println("New distance vector: " + distanceVector);
 			this.notifyVector();
 		}
+	}
+
+	public void deactivateNode(NodeDescriptor node) {
+		distanceVector.removeById(node.getId());
+		this.neighbors.remove(node);
+		System.out.println("Removing node " + node
+				+ " from distance vector of node " + this);
+		System.out.println("New vector: " + this.distanceVector);
+		this.notifyVector();
+	}
+
+	public void activateNode(NodeDescriptor node) {
+		VectorPair pair = new VectorPair(node.getId(), this.distances.get(node
+				.getId()));
+		if (!this.distanceVector.contains(node.getId())) {
+			this.distanceVector.append(pair);
+			this.neighbors.add(node);
+			System.out.println("Adding node " + node + " to distance vector");
+			System.out.println("New vector: " + this.distanceVector);
+			this.notifyVector();
+		}
+	}
+
+	public int getDistance(int id) {
+		return this.distances.get(id);
 	}
 
 	public void setId(int id) {
