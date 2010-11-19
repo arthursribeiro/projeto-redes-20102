@@ -41,14 +41,24 @@ public class DistanceVector {
 	public void append(VectorPair pair) {
 		this.vector.add(pair);
 	}
+	
+	public void removeById(int id) {
+		VectorPair toRemove = this.getPairById(id);
+		if (toRemove != null) {
+			this.vector.remove(toRemove);
+		}
+	}
 
-	public boolean merge(DistanceVector newVector, int sourceDistance,
+	public boolean merge(DistanceVector newVector, int source, int sourceDistance,
 			Node owner) {
 		boolean changed = false;
-		System.out.println(owner.getId() + " - " + sourceDistance);
 		for (int i = 0; i < newVector.size(); i++) {
 			VectorPair pair = newVector.get(i);
 			if (pair.getId() == owner.getId()) {
+				if (!this.contains(source)) {
+					this.append(new VectorPair(source, sourceDistance));
+					changed = true;
+				}
 				continue;
 			}
 			if (this.contains(pair.getId())) {
