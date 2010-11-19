@@ -1,3 +1,5 @@
+package Projeto.src;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -5,18 +7,18 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.util.Vector;
+import java.util.ArrayList;
 
 public class Pinger extends Thread {
 
-	Vector<NodeDescriptor> nodes;
-	Vector<NodeDescriptor> actives;
+	ArrayList<NodeDescriptor> nodes;
+	ArrayList<NodeDescriptor> actives;
 	Node node;
 
 	public Pinger(Node node) {
 		this.node = node;
-		this.nodes = new Vector<NodeDescriptor>();
-		this.actives = new Vector<NodeDescriptor>();
+		this.nodes = new ArrayList<NodeDescriptor>();
+		this.actives = new ArrayList<NodeDescriptor>();
 	}
 
 	public synchronized void addNode(NodeDescriptor node) {
@@ -68,16 +70,17 @@ public class Pinger extends Thread {
 	}
 
 	public synchronized void pingAll() {
-		for (NodeDescriptor node : this.nodes) {
-			this.ping(node);
+		for (NodeDescriptor nodeDescriptor : this.nodes) {
+			this.ping(nodeDescriptor);
 		}
 	}
 
+    @Override
 	public void run() {
 		while (true) {
 			try {
 				this.pingAll();
-				Thread.sleep(5000);
+				Thread.sleep(5000); // Can cause performance problems
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

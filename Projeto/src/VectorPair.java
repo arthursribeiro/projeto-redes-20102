@@ -1,3 +1,5 @@
+package Projeto.src;
+
 public class VectorPair {
 
 	private int id;
@@ -24,6 +26,7 @@ public class VectorPair {
 		this.distance = distance;
 	}
 	
+    @Override
 	public String toString() {
 		return "<" + id + ";" + distance + ">";
 	}

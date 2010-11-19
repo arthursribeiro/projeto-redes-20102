@@ -1,23 +1,25 @@
-import java.util.Vector;
+package Projeto.src;
+
+import java.util.ArrayList;
 
 public class DistanceVector {
 
-	private Vector<VectorPair> vector;
+	private ArrayList<VectorPair> list;
 
 	public DistanceVector() {
-		this.vector = new Vector<VectorPair>();
+		this.list = new ArrayList<VectorPair>();
 	}
 
 	public int size() {
-		return this.vector.size();
+		return this.list.size();
 	}
 
 	public VectorPair get(int index) {
-		return this.vector.get(index);
+		return this.list.get(index);
 	}
 
 	public VectorPair getPairById(int id) {
-		for (VectorPair pair : this.vector) {
+		for (VectorPair pair : this.list) {
 			if (pair.getId() == id) {
 				return pair;
 			}
@@ -26,11 +28,11 @@ public class DistanceVector {
 	}
 
 	public int indexOf(VectorPair pair) {
-		return this.vector.indexOf(pair);
+		return this.list.indexOf(pair);
 	}
 
 	public boolean contains(int id) {
-		for (VectorPair pair : this.vector) {
+		for (VectorPair pair : this.list) {
 			if (pair.getId() == id) {
 				return true;
 			}
@@ -39,13 +41,13 @@ public class DistanceVector {
 	}
 
 	public void append(VectorPair pair) {
-		this.vector.add(pair);
+		this.list.add(pair);
 	}
 	
 	public void removeById(int id) {
 		VectorPair toRemove = this.getPairById(id);
 		if (toRemove != null) {
-			this.vector.remove(toRemove);
+			this.list.remove(toRemove);
 		}
 	}
 
@@ -84,7 +86,7 @@ public class DistanceVector {
 	public String toString() {
 		String result = "";
 		for (int i = 0; i < this.size(); i++) {
-			result += this.vector.get(i);
+			result += this.list.get(i);
 			if (i < this.size() - 1) {
 				result += ",";
 			}

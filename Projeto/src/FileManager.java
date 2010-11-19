@@ -1,3 +1,5 @@
+package Projeto.src;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -33,7 +35,7 @@ public class FileManager {
 		        FileManager.dados.put(splitStr[0], valor);
 	        }
 		} catch (IOException e) {
-			System.out.println("Arquivo não encontrado!");
+			System.out.println("Arquivo nï¿½o encontrado!");
 		}
 	}
 	

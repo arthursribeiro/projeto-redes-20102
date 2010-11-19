@@ -1,3 +1,4 @@
+package Projeto.src;
 
 public class NodeDescriptor {
 
@@ -35,6 +36,7 @@ public class NodeDescriptor {
 		this.port = port;
 	}
 	
+    @Override
 	public String toString() {
 		return "(" + id + ", " + ip + ", " + port + ")";
 	}

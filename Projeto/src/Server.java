@@ -1,3 +1,5 @@
+package Projeto.src;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -17,6 +19,7 @@ public class Server extends Thread {
 		this.pingCounter = 0;
 	}
 
+    @Override
 	public void run() {
 		while (true) {
 			try {
