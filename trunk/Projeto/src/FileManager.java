@@ -9,11 +9,11 @@ public class FileManager {
 	private static HashMap<String, String[]> dados = new HashMap<String, String[]>();
 	
 	public static int getPort(int id) {
-		return Integer.parseInt(FileManager.dados.get(""+id)[1]);
+		return Integer.parseInt(FileManager.dados.get(""+id)[0]);
 	}
 	
 	public static String getIp(int id) {
-		return FileManager.dados.get(""+id)[0];
+		return FileManager.dados.get(""+id)[1];
 	}
 	
 	public static HashMap<String, String[]> getDados() {
