@@ -1,12 +1,13 @@
+package Projeto.src;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.HashMap;
-import java.util.Vector;
+import java.util.ArrayList;
 
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.NoFixedFacet;
 
 public class Node {
 
@@ -14,7 +15,7 @@ public class Node {
 	private int port;
 	private String ip;
 	private DistanceVector distanceVector;
-	private Vector<NodeDescriptor> neighbors;
+	private ArrayList<NodeDescriptor> neighbors;
 	private Server server;
 	private HashMap<Integer, Integer> distances;
 	Pinger pinger;
@@ -24,7 +25,7 @@ public class Node {
 		this.setPort(port);
 		this.setIp(ip);
 		this.distanceVector = new DistanceVector();
-		this.neighbors = new Vector<NodeDescriptor>();
+		this.neighbors = new ArrayList<NodeDescriptor>();
 		this.server = new Server(port, this);
 		this.distances = new HashMap<Integer, Integer>();
 		this.pinger = new Pinger(this);
@@ -45,15 +46,15 @@ public class Node {
 		System.out.println("Notifying " + this.distanceVector);
 		for (NodeDescriptor node : this.neighbors) {
 			System.out.println("Notifying for " + node);
-			String ip = node.getIp();
-			int port = node.getPort();
+			String nodeIp = node.getIp();
+			int nodePort = node.getPort();
 			try {
 				DatagramSocket socket = new DatagramSocket();
-				InetAddress ipAddress = InetAddress.getByName(ip);
+				InetAddress ipAddress = InetAddress.getByName(nodeIp);
 				byte vector[] = (id + "," + this.distanceVector.toString())
 						.getBytes();
 				DatagramPacket sendPacket = new DatagramPacket(vector,
-						vector.length, ipAddress, port);
+						vector.length, ipAddress, nodePort);
 				socket.send(sendPacket);
 			} catch (SocketException e) {
 				e.printStackTrace();
@@ -130,6 +131,7 @@ public class Node {
 		return ip;
 	}
 
+    @Override
 	public String toString() {
 		return "Node: (" + id + ", " + ip + ", " + port + ")";
 	}
