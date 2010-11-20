@@ -54,9 +54,6 @@ public class DistanceVector {
 		boolean changed = false;
 		for (int i = 0; i < newVector.size(); i++) {
 			VectorPair pair = newVector.get(i);
-			if (owner.isNeighbor(pair.getId())) {
-				continue;
-			}
 			if (pair.getId() == owner.getId()) {
 				continue;
 			}
