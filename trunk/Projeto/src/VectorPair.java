@@ -1,4 +1,3 @@
-package Projeto.src;
 
 public class VectorPair {
 

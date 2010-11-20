@@ -1,5 +1,3 @@
-package Projeto.src;
-
 import java.util.ArrayList;
 
 public class DistanceVector {
@@ -43,7 +41,7 @@ public class DistanceVector {
 	public void append(VectorPair pair) {
 		this.list.add(pair);
 	}
-	
+
 	public void removeById(int id) {
 		VectorPair toRemove = this.getPairById(id);
 		if (toRemove != null) {
@@ -51,8 +49,8 @@ public class DistanceVector {
 		}
 	}
 
-	public boolean merge(DistanceVector newVector, int source, int sourceDistance,
-			Node owner) {
+	public boolean merge(DistanceVector newVector, int source,
+			int sourceDistance, Node owner) {
 		boolean changed = false;
 		System.out.println("New vector: " + newVector);
 		for (int i = 0; i < newVector.size(); i++) {
@@ -75,6 +73,10 @@ public class DistanceVector {
 				}
 			} else {
 				System.out.println("else " + newVector);
+				owner
+						.activateNode(new NodeDescriptor(pair.getId(),
+								FileManager.getIp(pair.getId()), FileManager
+										.getPort(pair.getId())));
 				this.append(new VectorPair(pair.getId(), pair.getDistance()
 						+ sourceDistance));
 				changed = true;
