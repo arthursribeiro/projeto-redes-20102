@@ -1,5 +1,5 @@
 
-public class VectorPair implements Comparable<VectorPair> {
+public class VectorPair {
 
 	private int id;
 	private int distance;
@@ -29,10 +29,14 @@ public class VectorPair implements Comparable<VectorPair> {
 	public String toString() {
 		return "<" + id + ";" + distance + ">";
 	}
-
-	@Override
-	public int compareTo(VectorPair pair) {
-		return (id - pair.getId()) + (distance - pair.getDistance());
-	}
+    
+    public boolean equals(Object o) {
+    	try {
+    		VectorPair pair = (VectorPair)o;
+    		return this.id == pair.getId() && this.distance == pair.getDistance();
+    	} catch (ClassCastException e) {
+    		return false;
+    	}
+    }
 
 }
