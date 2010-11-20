@@ -1,17 +1,15 @@
-package Projeto.src;
-
 public class NodeDescriptor {
 
 	private int id;
 	private String ip;
 	private int port;
-	
+
 	public NodeDescriptor(int id, String ip, int port) {
 		this.id = id;
 		this.ip = ip;
 		this.port = port;
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -35,8 +33,7 @@ public class NodeDescriptor {
 	public void setPort(int port) {
 		this.port = port;
 	}
-	
-    @Override
+
 	public String toString() {
 		return "(" + id + ", " + ip + ", " + port + ")";
 	}

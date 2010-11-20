@@ -1,5 +1,3 @@
-package Projeto.src;
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -102,7 +100,7 @@ public class Node {
 			this.notifyVector();
 		}
 	}
-
+	
 	public int getDistance(int id) {
 		return this.distances.get(id);
 	}
