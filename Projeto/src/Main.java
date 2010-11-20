@@ -52,6 +52,7 @@ public class Main {
 	
 	public static void main(String[] args) {
 		Main m = new Main();
+		FileManager.setDiameter(20);
 		FileManager.buildMap();
 		int id;
 		if (args.length > 1) {
