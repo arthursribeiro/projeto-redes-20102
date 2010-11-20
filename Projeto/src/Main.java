@@ -65,6 +65,7 @@ public class Main {
 			m.adicionarVizinhos(no);
 			no.start();
 		}
+		VectorPair v = new VectorPair(0, 0);
 	}
 
 }
