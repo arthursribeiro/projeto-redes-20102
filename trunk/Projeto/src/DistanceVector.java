@@ -59,16 +59,24 @@ public class DistanceVector {
 			}
 			if (this.contains(pair.getId())) {
 				VectorPair existingPair = this.getPairById(pair.getId());
-				if (pair.getDistance() + sourceDistance < existingPair
+				if (pair.getDistance() == Integer.MAX_VALUE) {
+					if (existingPair.getDistance() != Integer.MAX_VALUE) {
+						existingPair.setDistance(Integer.MAX_VALUE);
+						changed = true;
+					}
+				} else if (pair.getDistance() + sourceDistance < existingPair
 						.getDistance()) {
 					existingPair.setDistance(pair.getDistance()
 							+ sourceDistance);
 					changed = true;
 				}
 			} else {
-				this.append(new VectorPair(pair.getId(), pair.getDistance()
-						+ sourceDistance));
-				changed = true;
+				if (pair.getDistance() + sourceDistance <= FileManager
+						.getDiameter()) {
+					this.append(new VectorPair(pair.getId(), pair.getDistance()
+							+ sourceDistance));
+					changed = true;
+				}
 			}
 		}
 		return changed;

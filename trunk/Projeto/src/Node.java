@@ -84,7 +84,8 @@ public class Node {
 	}
 
 	public void deactivateNode(NodeDescriptor node) {
-		distanceVector.removeById(node.getId());
+		distanceVector.getPairById(node.getId()).setDistance(Integer.MAX_VALUE);
+//		distanceVector.removeById(node.getId());
 		System.out.println("New distance vector: " + this.distanceVector);
 		this.actives.remove(node);
 		this.notifyVector();

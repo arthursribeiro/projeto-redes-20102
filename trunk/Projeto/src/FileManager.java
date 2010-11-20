@@ -7,6 +7,7 @@ import java.util.HashMap;
 public class FileManager {
 	
 	private static HashMap<String, String[]> dados = new HashMap<String, String[]>();
+	private static int diameter;
 	
 	public static int getPort(int id) {
 		return Integer.parseInt(FileManager.dados.get(""+id)[0]);
@@ -35,6 +36,14 @@ public class FileManager {
 		} catch (IOException e) {
 			System.out.println("Arquivo n�o encontrado!");
 		}
+	}
+
+	public static void setDiameter(int diameter) {
+		FileManager.diameter = diameter;
+	}
+
+	public static int getDiameter() {
+		return diameter;
 	}
 	
 }
