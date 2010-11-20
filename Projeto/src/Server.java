@@ -34,9 +34,8 @@ public class Server extends Thread {
 							pong.length, packet.getAddress(), packet.getPort());
 					DatagramSocket pongSocket = new DatagramSocket();
 					pongSocket.send(sendPacket);
-					int id = Integer.parseInt(content.split(",")[1]);
 				} else {
-					System.out.println("Distance vector received!");
+//					System.out.println("Distance vector received!");
 					String vectorString[] = (new String(packet.getData())
 							.trim()).split(",");
 					int source = Integer.parseInt(vectorString[0]);
@@ -45,7 +44,7 @@ public class Server extends Thread {
 						vector[i - 1] = vectorString[i];
 					}
 					DistanceVector distanceVector = createVector(vector);
-					System.out.println("Created vector: " + distanceVector);
+//					System.out.println("Vector received: " + distanceVector);
 					node.updateVector(distanceVector, source);
 				}
 			} catch (IOException e) {

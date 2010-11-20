@@ -52,12 +52,9 @@ public class DistanceVector {
 	public boolean merge(DistanceVector newVector, int source,
 			int sourceDistance, Node owner) {
 		boolean changed = false;
-		System.out.println("New vector: " + newVector);
 		for (int i = 0; i < newVector.size(); i++) {
 			VectorPair pair = newVector.get(i);
-			System.out.println("Pair: " + pair);
 			if (owner.isNeighbor(pair.getId())) {
-				System.out.println("neighbor... " + pair);
 				continue;
 			}
 			if (pair.getId() == owner.getId()) {
@@ -72,11 +69,6 @@ public class DistanceVector {
 					changed = true;
 				}
 			} else {
-				System.out.println("else " + newVector);
-				owner
-						.activateNode(new NodeDescriptor(pair.getId(),
-								FileManager.getIp(pair.getId()), FileManager
-										.getPort(pair.getId())));
 				this.append(new VectorPair(pair.getId(), pair.getDistance()
 						+ sourceDistance));
 				changed = true;

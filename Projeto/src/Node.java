@@ -4,7 +4,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.HashMap;
-import java.util.ArrayList;
+import java.util.Vector;
 
 
 public class Node {
@@ -13,7 +13,8 @@ public class Node {
 	private int port;
 	private String ip;
 	private DistanceVector distanceVector;
-	private ArrayList<NodeDescriptor> neighbors;
+	private Vector<NodeDescriptor> neighbors;
+	private Vector<NodeDescriptor> actives;
 	private Server server;
 	private HashMap<Integer, Integer> distances;
 	Pinger pinger;
@@ -23,7 +24,8 @@ public class Node {
 		this.setPort(port);
 		this.setIp(ip);
 		this.distanceVector = new DistanceVector();
-		this.neighbors = new ArrayList<NodeDescriptor>();
+		this.neighbors = new Vector<NodeDescriptor>();
+		this.actives = new Vector<NodeDescriptor>();
 		this.server = new Server(port, this);
 		this.distances = new HashMap<Integer, Integer>();
 		this.pinger = new Pinger(this);
@@ -69,6 +71,7 @@ public class Node {
 
 	public void addNeighbor(NodeDescriptor node, int distance) {
 		this.distances.put(node.getId(), distance);
+		this.neighbors.add(node);
 		this.pinger.addNode(node);
 	}
 
@@ -82,10 +85,8 @@ public class Node {
 
 	public void deactivateNode(NodeDescriptor node) {
 		distanceVector.removeById(node.getId());
-		this.neighbors.remove(node);
-		System.out.println("Removing node " + node
-				+ " from distance vector of node " + this);
-		System.out.println("New vector: " + this.distanceVector);
+		System.out.println("New distance vector: " + this.distanceVector);
+		this.actives.remove(node);
 		this.notifyVector();
 	}
 
@@ -94,10 +95,11 @@ public class Node {
 				.getId()));
 		if (!this.distanceVector.contains(node.getId())) {
 			this.distanceVector.append(pair);
-			this.neighbors.add(node);
-			System.out.println("Adding node " + node + " to distance vector");
-			System.out.println("New vector: " + this.distanceVector);
+			System.out.println("New distance vector: " + this.distanceVector);
 			this.notifyVector();
+		}
+		if (!this.actives.contains(node)) {
+			this.actives.add(node);
 		}
 	}
 	
