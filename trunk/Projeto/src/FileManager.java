@@ -7,9 +7,9 @@ import java.util.HashMap;
 public class FileManager {
 	
 	private static HashMap<String, String[]> dados = new HashMap<String, String[]>();
-	private static int diameter;
+	private static int diametro;
 	
-	public static int getPort(int id) {
+	public static int getPorta(int id) {
 		return Integer.parseInt(FileManager.dados.get(""+id)[0]);
 	}
 	
@@ -21,14 +21,14 @@ public class FileManager {
 		return FileManager.dados;
 	}
 	
-	public static void buildMap() {
+	public static void construirMapa() {
 		try {
 	        BufferedReader in = new BufferedReader(new FileReader("roteador.config"));
 	        String str;
 	        while(in.ready()) {
 	        	str = in.readLine();
 	        	String [] valor = new String[2];
-		        String [] splitStr = str.split(" ");
+		        String [] splitStr = str.split("\\s+");
 		        valor[0] = splitStr[1];
 		        valor[1] = splitStr[2];
 		        FileManager.dados.put(splitStr[0], valor);
@@ -38,25 +38,25 @@ public class FileManager {
 		}
 	}
 	
-	public static void buildDistance() {
+	public static void construirDistancia() {
 		try {
 			BufferedReader in = new BufferedReader(new FileReader("distanciaMaxima.config"));
 	        String str;
 	        while(in.ready()) {
 	        	str = in.readLine();
-	        	diameter = Integer.parseInt(str);
+	        	diametro = Integer.parseInt(str);
 	        }
 		} catch (IOException e) {
 			System.err.println("Arquivo com distancia nao foi encontrado");
 		}
 	}
 
-	public static void setDiameter(int diameter) {
-		FileManager.diameter = diameter;
+	public static void setDiametro(int diametro) {
+		FileManager.diametro = diametro;
 	}
 
-	public static int getDiameter() {
-		return diameter;
+	public static int getDiametro() {
+		return diametro;
 	}
 	
 }

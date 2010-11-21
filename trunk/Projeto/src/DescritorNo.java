@@ -1,13 +1,13 @@
-public class NodeDescriptor {
+public class DescritorNo {
 
 	private int id;
 	private String ip;
-	private int port;
+	private int porta;
 
-	public NodeDescriptor(int id, String ip, int port) {
+	public DescritorNo(int id, String ip, int port) {
 		this.id = id;
 		this.ip = ip;
-		this.port = port;
+		this.porta = port;
 	}
 
 	public int getId() {
@@ -26,16 +26,16 @@ public class NodeDescriptor {
 		this.ip = ip;
 	}
 
-	public int getPort() {
-		return port;
+	public int getPorta() {
+		return porta;
 	}
 
-	public void setPort(int port) {
-		this.port = port;
+	public void setPorta(int porta) {
+		this.porta = porta;
 	}
 
 	public String toString() {
-		return "(" + id + ", " + ip + ", " + port + ")";
+		return "(" + id + ", " + ip + ", " + porta + ")";
 	}
 
 }
