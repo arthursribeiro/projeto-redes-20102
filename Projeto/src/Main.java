@@ -6,8 +6,8 @@ import java.util.Scanner;
 
 public class Main {
 
-	public Node criarNo(int id) {
-		Node no = null;
+	public No criarNo(int id) {
+		No no = null;
 	    boolean valido = false;
 	    for(String chave : FileManager.getDados().keySet()) {
 		    int identificador = Integer.parseInt(chave);
@@ -18,7 +18,7 @@ public class Main {
 		    int porta = Integer.parseInt(FileManager.getDados().get(chave)[0]);
 		    String ip = FileManager.getDados().get(chave)[1];
 		    try {
-		    	no = new Node(id, porta, ip);		        	
+		    	no = new No(id, porta, ip);		        	
 		    	System.out.println("Criou socket na porta: " + porta);
 		    	return no;
 		    } catch (SocketException e) {
@@ -30,7 +30,7 @@ public class Main {
 	    return no;
 	}
 	
-	public void adicionarVizinhos(Node no) {
+	public void adicionarVizinhos(No no) {
 		try {
 	        BufferedReader in = new BufferedReader(new FileReader("enlaces.config"));
 	        String str;
@@ -38,11 +38,11 @@ public class Main {
 	        	str = in.readLine();
 		        String [] splitStr = str.split(" ");
 		        if(Integer.parseInt(splitStr[0]) == no.getId()) {
-		        	NodeDescriptor desc = new NodeDescriptor(Integer.parseInt(splitStr[1]), FileManager.getDados().get(splitStr[1])[1], Integer.parseInt(FileManager.getDados().get(splitStr[1])[0]));
-		        	no.addNeighbor(desc, Integer.parseInt(splitStr[2]));
+		        	DescritorNo desc = new DescritorNo(Integer.parseInt(splitStr[1]), FileManager.getDados().get(splitStr[1])[1], Integer.parseInt(FileManager.getDados().get(splitStr[1])[0]));
+		        	no.adicionarVizinho(desc, Integer.parseInt(splitStr[2]));
 		        } else if(Integer.parseInt(splitStr[1]) == no.getId()) {
-		        	NodeDescriptor desc = new NodeDescriptor(Integer.parseInt(splitStr[0]), FileManager.getDados().get(splitStr[0])[1], Integer.parseInt(FileManager.getDados().get(splitStr[0])[0]));
-		        	no.addNeighbor(desc, Integer.parseInt(splitStr[2]));
+		        	DescritorNo desc = new DescritorNo(Integer.parseInt(splitStr[0]), FileManager.getDados().get(splitStr[0])[1], Integer.parseInt(FileManager.getDados().get(splitStr[0])[0]));
+		        	no.adicionarVizinho(desc, Integer.parseInt(splitStr[2]));
 		        }
 	        }
 		} catch (IOException e){
@@ -52,8 +52,8 @@ public class Main {
 	
 	public static void main(String[] args) {
 		Main m = new Main();
-		FileManager.buildDistance();
-		FileManager.buildMap();
+		FileManager.construirDistancia();
+		FileManager.construirMapa();
 		int id;
 		if (args.length > 1) {
 			id = Integer.parseInt(args[1]);
@@ -61,7 +61,7 @@ public class Main {
 			Scanner sc = new Scanner(System.in);
 			System.out.print("Por favor, insira o numero do ID do roteador desejado: ");
 			id = sc.nextInt();
-			Node no = m.criarNo(id);
+			No no = m.criarNo(id);
 			m.adicionarVizinhos(no);
 			no.start();
 		}

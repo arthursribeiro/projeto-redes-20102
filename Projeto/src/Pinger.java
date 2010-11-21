@@ -9,55 +9,53 @@ import java.util.ArrayList;
 
 public class Pinger extends Thread {
 
-	ArrayList<NodeDescriptor> nodes;
-	ArrayList<NodeDescriptor> actives;
-	Node node;
+	ArrayList<DescritorNo> nos;
+	ArrayList<DescritorNo> ativos;
+	No no;
 
-	public Pinger(Node node) {
-		this.node = node;
-		this.nodes = new ArrayList<NodeDescriptor>();
-		this.actives = new ArrayList<NodeDescriptor>();
+	public Pinger(No no) {
+		this.no = no;
+		this.nos = new ArrayList<DescritorNo>();
+		this.ativos = new ArrayList<DescritorNo>();
 	}
 
-	public synchronized void addNode(NodeDescriptor node) {
-		if (!this.nodes.contains(node)) {
-			this.nodes.add(node);
+	public synchronized void adicionarNo(DescritorNo no) {
+		if (!this.nos.contains(no)) {
+			this.nos.add(no);
 		}
 	}
 
-	public synchronized void ping(NodeDescriptor node) {
-		String ip = node.getIp();
-		int port = node.getPort();
+	public synchronized void ping(DescritorNo no) {
+		String ip = no.getIp();
+		int porta = no.getPorta();
 		try {
-			InetAddress ipAddress = InetAddress.getByName(ip);
-			byte ping[] = ("ping," + node.getId()).getBytes();
-			DatagramSocket wait = new DatagramSocket();
-			DatagramPacket pingPacket = new DatagramPacket(ping,
-					ping.length, ipAddress, port);
+			InetAddress enderecoIP = InetAddress.getByName(ip);
+			byte ping[] = ("ping," + no.getId()).getBytes();
+			DatagramSocket espera = new DatagramSocket();
+			DatagramPacket pacotePing = new DatagramPacket(ping,
+					ping.length, enderecoIP, porta);
 			// System.out.println(">>>>>>>>>> Ping? " + node.getId());
-			wait.send(pingPacket);
+			espera.send(pacotePing);
 			byte pong[] = new byte[12];
-			DatagramPacket pongPacket = new DatagramPacket(pong,
-					pong.length, ipAddress, port);
-			wait.setSoTimeout(500);
+			DatagramPacket pacotePong = new DatagramPacket(pong,
+					pong.length, enderecoIP, porta);
+			espera.setSoTimeout(500);
 			try {
-				wait.receive(pongPacket);
+				espera.receive(pacotePong);
 			} catch (SocketTimeoutException e) {
 				// System.out.println("Timeout! Pong not received!");
-				if (this.actives.contains(node)) {
-					this.actives.remove(node);
-					this.node.removeElementFromVector(node.getId());
+				if (this.ativos.contains(no)) {
+					this.ativos.remove(no);
+					this.no.removerElemento(no.getId());
 					//this.node.deactivateNode(node);
-					this.node.recalcularVetor();
+					this.no.recalcularVetor();
 				}
-				wait.close();
+				espera.close();
 				return;
 			}
-			String responseId = (new String(pongPacket.getData()).trim())
-					.split(",")[1];
-			if (!this.actives.contains(node)) {
-				this.actives.add(node);
-				this.node.activateNode(node);
+			if (!this.ativos.contains(no)) {
+				this.ativos.add(no);
+				this.no.ativarNo(no);
 			}
 			// System.out.println("<<<<<<<<<< Pong! " + responseId);
 		} catch (UnknownHostException e) {
@@ -69,9 +67,9 @@ public class Pinger extends Thread {
 		}
 	}
 
-	public synchronized void pingAll() {
-		for (NodeDescriptor nodeDescriptor : this.nodes) {
-			this.ping(nodeDescriptor);
+	public synchronized void pingTodos() {
+		for (DescritorNo descritorNo : this.nos) {
+			this.ping(descritorNo);
 		}
 	}
 
@@ -79,7 +77,7 @@ public class Pinger extends Thread {
 	public void run() {
 		while (true) {
 			try {
-				this.pingAll();
+				this.pingTodos();
 				Thread.sleep(5000); // Can cause performance problems
 			} catch (InterruptedException e) {
 				e.printStackTrace();
