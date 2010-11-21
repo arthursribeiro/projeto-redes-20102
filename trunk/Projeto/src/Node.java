@@ -3,6 +3,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -15,6 +16,7 @@ public class Node {
 	private DistanceVector distanceVector;
 	private Vector<NodeDescriptor> neighbors;
 	private Vector<NodeDescriptor> actives;
+	private HashMap<Integer, DistanceVector> vetoresDistancia;
 	private Server server;
 	private HashMap<Integer, Integer> distances;
 	Pinger pinger;
@@ -24,6 +26,7 @@ public class Node {
 		this.setPort(port);
 		this.setIp(ip);
 		this.distanceVector = new DistanceVector();
+		vetoresDistancia = new HashMap<Integer, DistanceVector>();
 		this.neighbors = new Vector<NodeDescriptor>();
 		this.actives = new Vector<NodeDescriptor>();
 		this.server = new Server(port, this);
@@ -31,6 +34,71 @@ public class Node {
 		this.pinger = new Pinger(this);
 		this.distanceVector.append(new VectorPair(id, 0));
 		this.distances.put(id, 0);
+	}
+	
+	public void atualizarHistorico(DistanceVector dv, int source) {
+		vetoresDistancia.remove(source);
+		vetoresDistancia.put(source, dv);
+	}
+	
+	public void recalcularVetor() {
+		DistanceVector novoVetor = new DistanceVector();
+		novoVetor.append(new VectorPair(id, 0));
+		if(vetoresDistancia.keySet().size() > 0) {
+			for(int i = 0; i < vetoresDistancia.keySet().toArray().length; i++) {
+				DistanceVector byNode = vetoresDistancia.get(vetoresDistancia.keySet().toArray()[i]);
+				for(int j = 0; j < byNode.size(); j++) {
+					if((byNode.get(j).getId()) != id) {
+						if(novoVetor.getPairById((byNode.get(j).getId())) == null){
+							VectorPair toAdd = new VectorPair(byNode.get(j).getId(), byNode.get(j).getDistance());
+							toAdd.setDistance(distances.get(vetoresDistancia.keySet().toArray()[i])+toAdd.getDistance());
+							if(toAdd.getDistance() > FileManager.getDiameter()) {
+								toAdd.setDistance(FileManager.getDiameter());
+							}
+							novoVetor.append(toAdd);
+						} else {
+							VectorPair par = byNode.get(j);
+							VectorPair par2 = novoVetor.getPairById(par.getId());
+							if(par2.getId() == par.getId()) {
+								if((par.getDistance()+distances.get(vetoresDistancia.keySet().toArray()[i])) < par2.getDistance()) {
+									if (par.getDistance()+distances.get(vetoresDistancia.keySet().toArray()[i]) > FileManager.getDiameter()) {
+										novoVetor.setDistanceById(par2.getId(), FileManager.getDiameter());
+									} else {
+										novoVetor.setDistanceById(par2.getId(), par.getDistance()+distances.get(vetoresDistancia.keySet().toArray()[i]));
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		if (changedVector(novoVetor)) {
+			distanceVector = novoVetor;
+			System.out.println("New distance vector: " + distanceVector);
+			this.notifyVector();
+		}
+	}
+	
+	public void removeElementFromVector(int id) {
+		vetoresDistancia.remove(id);
+	}
+	
+	public boolean changedVector(DistanceVector novo) {
+		int controle = 0;
+		if(this.distanceVector.size() != novo.size()) {
+			return true;
+		}
+		for(int i = 0; i < this.distanceVector.size(); i++) {
+			for(int j = 0; j < novo.size(); j++) {
+				if(novo.get(j).getId() == distanceVector.get(i).getId()) {
+					if(!novo.get(j).equals(distanceVector.get(i))) {
+						controle++;
+					}
+				}
+			}
+		}
+		return (controle != 0);
 	}
 
 	public boolean isNeighbor(int id) {
@@ -43,7 +111,6 @@ public class Node {
 	}
 	
 	public void notifyVector() {
-		System.out.println("Notifying " + this.distanceVector);
 		for (NodeDescriptor node : this.neighbors) {
 			System.out.println("Notifying for " + node);
 			String nodeIp = node.getIp();
@@ -135,6 +202,10 @@ public class Node {
     @Override
 	public String toString() {
 		return "Node: (" + id + ", " + ip + ", " + port + ")";
+	}
+
+	public DistanceVector getDistanceVector() {
+		return distanceVector;
 	}
 
 }

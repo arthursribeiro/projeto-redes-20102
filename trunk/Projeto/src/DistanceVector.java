@@ -24,6 +24,14 @@ public class DistanceVector {
 		}
 		return null;
 	}
+	
+	public void setDistanceById(int id, int distance) {
+		for(int i = 0; i < this.list.size(); i++) {
+			if(this.list.get(i).getId() == id) {
+				this.list.get(i).setDistance(distance);
+			}
+		}
+	}
 
 	public int indexOf(VectorPair pair) {
 		return this.list.indexOf(pair);

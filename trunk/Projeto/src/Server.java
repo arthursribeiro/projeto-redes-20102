@@ -44,8 +44,9 @@ public class Server extends Thread {
 						vector[i - 1] = vectorString[i];
 					}
 					DistanceVector distanceVector = createVector(vector);
-//					System.out.println("Vector received: " + distanceVector);
-					node.updateVector(distanceVector, source);
+					node.atualizarHistorico(distanceVector, source);
+					//node.updateVector(distanceVector, source);
+					node.recalcularVetor();
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
