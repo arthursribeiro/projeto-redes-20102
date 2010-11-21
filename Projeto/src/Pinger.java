@@ -46,7 +46,9 @@ public class Pinger extends Thread {
 				// System.out.println("Timeout! Pong not received!");
 				if (this.actives.contains(node)) {
 					this.actives.remove(node);
-					this.node.deactivateNode(node);
+					this.node.removeElementFromVector(node.getId());
+					//this.node.deactivateNode(node);
+					this.node.recalcularVetor();
 				}
 				wait.close();
 				return;

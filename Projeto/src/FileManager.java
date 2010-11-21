@@ -34,7 +34,20 @@ public class FileManager {
 		        FileManager.dados.put(splitStr[0], valor);
 	        }
 		} catch (IOException e) {
-			System.out.println("Arquivo n�o encontrado!");
+			System.out.println("Arquivo nao encontrado!");
+		}
+	}
+	
+	public static void buildDistance() {
+		try {
+			BufferedReader in = new BufferedReader(new FileReader("distanciaMaxima.config"));
+	        String str;
+	        while(in.ready()) {
+	        	str = in.readLine();
+	        	diameter = Integer.parseInt(str);
+	        }
+		} catch (IOException e) {
+			System.err.println("Arquivo com distancia nao foi encontrado");
 		}
 	}
 

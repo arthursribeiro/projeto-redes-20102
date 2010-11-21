@@ -52,7 +52,7 @@ public class Main {
 	
 	public static void main(String[] args) {
 		Main m = new Main();
-		FileManager.setDiameter(20);
+		FileManager.buildDistance();
 		FileManager.buildMap();
 		int id;
 		if (args.length > 1) {
@@ -65,7 +65,6 @@ public class Main {
 			m.adicionarVizinhos(no);
 			no.start();
 		}
-		VectorPair v = new VectorPair(0, 0);
 	}
 
 }
