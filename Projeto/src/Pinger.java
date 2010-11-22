@@ -7,6 +7,11 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
+/**
+ * Classe responsavel por testar os Nos e identificar Nós ativos e desativados
+ * @author Grupo 10
+ *
+ */
 public class Pinger extends Thread {
 
 	ArrayList<DescritorNo> nos;
@@ -19,12 +24,21 @@ public class Pinger extends Thread {
 		this.ativos = new ArrayList<DescritorNo>();
 	}
 
+	/**
+	 * Adiciona o No recebido a lista de nos
+	 * @param no	No a ser adicionado
+	 */
 	public synchronized void adicionarNo(DescritorNo no) {
 		if (!this.nos.contains(no)) {
 			this.nos.add(no);
 		}
 	}
 
+	/**
+	 * Envia um ping para o No informado e aguarda recebimento de resposta. Caso nao receba remove o No
+	 * da lista de nos ativos. Caso receba e o No não esteja na lista de ativados então adiciona-o
+	 * @param no	No a ser testado
+	 */
 	public synchronized void ping(DescritorNo no) {
 		String ip = no.getIp();
 		int porta = no.getPorta();
@@ -67,6 +81,9 @@ public class Pinger extends Thread {
 		}
 	}
 
+	/**
+	 * Manda mensagem de ping para todos os Nos na lista de Nos do pinger
+	 */
 	public synchronized void pingTodos() {
 		for (DescritorNo descritorNo : this.nos) {
 			this.ping(descritorNo);
