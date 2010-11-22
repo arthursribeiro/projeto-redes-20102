@@ -1,3 +1,8 @@
+/**
+ * Classe que armazena informações sobre Nos.
+ * 
+ * @author Grupo 10
+ */
 public class DescritorNo {
 
 	private int id;

@@ -1,4 +1,8 @@
-
+/**
+ * Classe para representar um par do VetorDistancia
+ * @author Grupo 10
+ *
+ */
 public class VetorPar {
 
 	private int id;
