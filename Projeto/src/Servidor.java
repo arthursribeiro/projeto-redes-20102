@@ -35,17 +35,17 @@ public class Servidor extends Thread {
 				udpListener.receive(pacote);
 				String conteudo = new String(pacote.getData()).trim();
 				if (conteudo.startsWith("ping")) {
-					// System.out.println(pingCounter++ + ". " + "Pong! " +
-					// node.getId());
+//					System.out.println("Ping recebido de " + no.getId());
 					byte pong[] = ("pong," + no.getId()).getBytes();
 					DatagramPacket pacoteAEnviar = new DatagramPacket(pong,
 							pong.length, pacote.getAddress(), pacote.getPort());
 					DatagramSocket socketPong = new DatagramSocket();
 					socketPong.send(pacoteAEnviar);
 				} else {
-//					System.out.println("Distance vector received!");
+//					System.out.println("Vetor distancia recebido de " + no.getId());
 					String vetorString[] = (new String(pacote.getData())
 							.trim()).split(",");
+//					System.out.println("Vetor recebido: " + conteudo);
 					int fonte = Integer.parseInt(vetorString[0]);
 					String vetor[] = new String[vetorString.length - 1];
 					for (int i = 1; i < vetorString.length; i++) {

@@ -46,32 +46,32 @@ public class Pinger extends Thread {
 			InetAddress enderecoIP = InetAddress.getByName(ip);
 			byte ping[] = ("ping," + no.getId()).getBytes();
 			DatagramSocket espera = new DatagramSocket();
-			DatagramPacket pacotePing = new DatagramPacket(ping,
-					ping.length, enderecoIP, porta);
-			// System.out.println(">>>>>>>>>> Ping? " + node.getId());
+			DatagramPacket pacotePing = new DatagramPacket(ping, ping.length,
+					enderecoIP, porta);
+//			System.out.println("Enviando ping para " + no.getId());
 			espera.send(pacotePing);
 			byte pong[] = new byte[12];
-			DatagramPacket pacotePong = new DatagramPacket(pong,
-					pong.length, enderecoIP, porta);
+			DatagramPacket pacotePong = new DatagramPacket(pong, pong.length,
+					enderecoIP, porta);
 			espera.setSoTimeout(500);
 			try {
 				espera.receive(pacotePong);
 			} catch (SocketTimeoutException e) {
-				// System.out.println("Timeout! Pong not received!");
+//				System.out.println("Timeout! Pong nao recebido!");
+//				this.no.desativarNo(no);
 				if (this.ativos.contains(no)) {
 					this.ativos.remove(no);
 					this.no.removerElemento(no.getId());
-					//this.node.deactivateNode(node);
 					this.no.recalcularVetor();
 				}
 				espera.close();
 				return;
 			}
+//			System.out.println("Pong recebido!");
 			if (!this.ativos.contains(no)) {
 				this.ativos.add(no);
 				this.no.ativarNo(no);
 			}
-			// System.out.println("<<<<<<<<<< Pong! " + responseId);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (SocketException e) {
@@ -90,7 +90,7 @@ public class Pinger extends Thread {
 		}
 	}
 
-    @Override
+	@Override
 	public void run() {
 		while (true) {
 			try {
@@ -101,5 +101,5 @@ public class Pinger extends Thread {
 			}
 		}
 	}
-	
+
 }

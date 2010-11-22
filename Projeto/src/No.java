@@ -45,30 +45,44 @@ public class No {
 		this.pinger = new Pinger(this);
 		this.vetorDistancia.adicionar(new VetorPar(id, 0));
 		this.distancias.put(id, 0);
+		for (String identificador : GerenciadorDeArquivos.getDados().keySet()) {
+			if (Integer.parseInt(identificador) != this.id) {
+				vetorDistancia
+						.adicionar(new VetorPar(
+								Integer.parseInt(identificador), GerenciadorDeArquivos
+										.getDiametro() + 1));
+			}
+		}
 	}
-	
+
 	
 	public void atualizarHistorico(VetorDistancia dv, int fonte) {
 		vetoresDistancia.remove(fonte);
 		vetoresDistancia.put(fonte, dv);
 	}
-	
+
 	/**
 	 * Atualiza o vetor distância deste No.
 	 */
 	public void recalcularVetor() {
 		VetorDistancia novoVetor = new VetorDistancia();
 		novoVetor.adicionar(new VetorPar(id, 0));
-		if(vetoresDistancia.keySet().size() > 0) {
-			for(int i = 0; i < vetoresDistancia.keySet().toArray().length; i++) {
-				VetorDistancia porNo = vetoresDistancia.get(vetoresDistancia.keySet().toArray()[i]);
-				for(int j = 0; j < porNo.size(); j++) {
-					if((porNo.get(j).getId()) != id) {
-						if(novoVetor.getParPorID((porNo.get(j).getId())) == null){
-							VetorPar toAdd = new VetorPar(porNo.get(j).getId(), porNo.get(j).getDistancia());
-							toAdd.setDistancia(distancias.get(vetoresDistancia.keySet().toArray()[i])+toAdd.getDistancia());
-							if(toAdd.getDistancia() > GerenciadorDeArquivos.getDiametro()) {
-								toAdd.setDistancia(GerenciadorDeArquivos.getDiametro());
+		if (vetoresDistancia.keySet().size() > 0) {
+			for (int i = 0; i < vetoresDistancia.keySet().toArray().length; i++) {
+				VetorDistancia porNo = vetoresDistancia.get(vetoresDistancia
+						.keySet().toArray()[i]);
+				for (int j = 0; j < porNo.size(); j++) {
+					if ((porNo.get(j).getId()) != id) {
+						if (novoVetor.getParPorID((porNo.get(j).getId())) == null) {
+							VetorPar toAdd = new VetorPar(porNo.get(j).getId(),
+									porNo.get(j).getDistancia());
+							toAdd.setDistancia(distancias.get(vetoresDistancia
+									.keySet().toArray()[i])
+									+ toAdd.getDistancia());
+							if (toAdd.getDistancia() > GerenciadorDeArquivos
+									.getDiametro()) {
+								toAdd
+										.setDistancia(GerenciadorDeArquivos.getDiametro() + 1);
 							}
 							novoVetor.adicionar(toAdd);
 						} else {
@@ -79,7 +93,12 @@ public class No {
 									if (par.getDistancia()+distancias.get(vetoresDistancia.keySet().toArray()[i]) > GerenciadorDeArquivos.getDiametro()) {
 										novoVetor.setDistanciaPorID(par2.getId(), GerenciadorDeArquivos.getDiametro());
 									} else {
-										novoVetor.setDistanciaPorID(par2.getId(), par.getDistancia()+distancias.get(vetoresDistancia.keySet().toArray()[i]));
+										novoVetor.setDistanciaPorID(par2
+												.getId(), par.getDistancia()
+												+ distancias
+														.get(vetoresDistancia
+																.keySet()
+																.toArray()[i]));
 									}
 								}
 							}
@@ -90,11 +109,12 @@ public class No {
 		}
 		if (vetorAlterado(novoVetor)) {
 			vetorDistancia = novoVetor;
-			System.out.println("New distance vector: " + vetorDistancia);
+			System.out.println("Novo vetor de distancia1: "
+					+ this.vetorDistancia.outputString());
 			this.notificarVetor();
 		}
 	}
-	
+
 	/**
 	 * Remove elemento com o Identificador fornecido do vetor distância
 	 * @param id	Identificador do elemento a ser removido
@@ -102,7 +122,7 @@ public class No {
 	public void removerElemento(int id) {
 		vetoresDistancia.remove(id);
 	}
-	
+
 	/**
 	 * Identifica se o vetor distância deste No foi alterado em comparação com
 	 * o vetor passado como parâmetro.
@@ -111,13 +131,13 @@ public class No {
 	 */
 	public boolean vetorAlterado(VetorDistancia novo) {
 		int controle = 0;
-		if(this.vetorDistancia.size() != novo.size()) {
+		if (this.vetorDistancia.size() != novo.size()) {
 			return true;
 		}
-		for(int i = 0; i < this.vetorDistancia.size(); i++) {
-			for(int j = 0; j < novo.size(); j++) {
-				if(novo.get(j).getId() == vetorDistancia.get(i).getId()) {
-					if(!novo.get(j).equals(vetorDistancia.get(i))) {
+		for (int i = 0; i < this.vetorDistancia.size(); i++) {
+			for (int j = 0; j < novo.size(); j++) {
+				if (novo.get(j).getId() == vetorDistancia.get(i).getId()) {
+					if (!novo.get(j).equals(vetorDistancia.get(i))) {
 						controle++;
 					}
 				}
@@ -139,14 +159,13 @@ public class No {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Este No notifica o seu vetor a todos os seus vizinhos através do envio de
 	 * um pacote UDP
 	 */
 	public void notificarVetor() {
 		for (DescritorNo no : this.vizinhos) {
-			System.out.println("Notifying for " + no);
 			String nodeIp = no.getIp();
 			int nodePort = no.getPorta();
 			try {
@@ -199,34 +218,23 @@ public class No {
 	}
 
 	/**
-	 * Desativa o no passado como parametro
-	 * @param no	No para ser desativado
-	 */
-	public void desativarNo(DescritorNo no) {
-		vetorDistancia.getParPorID(no.getId()).setDistancia(Integer.MAX_VALUE);
-//		distanceVector.removeById(node.getId());
-		System.out.println("New distance vector: " + this.vetorDistancia);
-		this.ativos.remove(no);
-		this.notificarVetor();
-	}
-
-	/**
 	 * Ativa o No passado como parametro
 	 * @param no	No para ser ativado
 	 */
 	public void ativarNo(DescritorNo no) {
-		VetorPar pair = new VetorPar(no.getId(), this.distancias.get(no
-				.getId()));
-		if (!this.vetorDistancia.contem(no.getId())) {
-			this.vetorDistancia.adicionar(pair);
-			System.out.println("New distance vector: " + this.vetorDistancia);
+		VetorPar par = this.vetorDistancia.getParPorID(no.getId());
+		if (par.getDistancia() > GerenciadorDeArquivos.getDiametro()) {
+			this.vetorDistancia.getParPorID(par.getId()).setDistancia(
+					this.distancias.get(no.getId()));
+			System.out.println("Novo vetor de distancia4: "
+					+ this.vetorDistancia.outputString());
 			this.notificarVetor();
 		}
 		if (!this.ativos.contains(no)) {
 			this.ativos.add(no);
 		}
 	}
-	
+
 	/**
 	 * Retorna a distância deste No para o No com o ID passado
 	 * @param id	Identificador do No ao qual se quer saber a distancia
@@ -260,7 +268,7 @@ public class No {
 		return ip;
 	}
 
-    @Override
+	@Override
 	public String toString() {
 		return "Node: (" + id + ", " + ip + ", " + porta + ")";
 	}
