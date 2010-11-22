@@ -90,48 +90,6 @@ public class VetorDistancia {
 		}
 	}
 
-	/**
-	 * Atualiza os valores deste VetorDistancia a partir dos valores do novo
-	 * VetorDistancia da fonte fornecida
-	 * @param novoVetor			Vetor da fonte com os novos valores
-	 * @param fonte				ID do No fonte
-	 * @param distanciaFonte	Distancia do dono deste VetorDistancia para a fonte
-	 * @param dono				ID do dono deste VetorDistancia 
-	 * @return
-	 */
-	public boolean mesclar(VetorDistancia novoVetor, int fonte,
-			int distanciaFonte, No dono) {
-		boolean modificado = false;
-		for (int i = 0; i < novoVetor.size(); i++) {
-			VetorPar par = novoVetor.get(i);
-			if (par.getId() == dono.getId()) {
-				continue;
-			}
-			if (this.contem(par.getId())) {
-				VetorPar parExistente = this.getParPorID(par.getId());
-				if (par.getDistancia() == Integer.MAX_VALUE) {
-					if (parExistente.getDistancia() != Integer.MAX_VALUE) {
-						parExistente.setDistancia(Integer.MAX_VALUE);
-						modificado = true;
-					}
-				} else if (par.getDistancia() + distanciaFonte < parExistente
-						.getDistancia()) {
-					parExistente.setDistancia(par.getDistancia()
-							+ distanciaFonte);
-					modificado = true;
-				}
-			} else {
-				if (par.getDistancia() + distanciaFonte <= GerenciadorDeArquivos
-						.getDiametro()) {
-					this.adicionar(new VetorPar(par.getId(), par.getDistancia()
-							+ distanciaFonte));
-					modificado = true;
-				}
-			}
-		}
-		return modificado;
-	}
-
 	public String toString() {
 		String result = "";
 		for (int i = 0; i < this.size(); i++) {
