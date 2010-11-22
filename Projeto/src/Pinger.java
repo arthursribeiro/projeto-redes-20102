@@ -95,7 +95,7 @@ public class Pinger extends Thread {
 		while (true) {
 			try {
 				this.pingTodos();
-				Thread.sleep(5000); // Can cause performance problems
+				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

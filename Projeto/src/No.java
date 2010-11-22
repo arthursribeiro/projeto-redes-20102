@@ -3,13 +3,16 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
  * Classe para representar um Nó (roteador) na topologia fornecida
+ * 
  * @author Grupo 10
- *
+ * 
  */
 public class No {
 
@@ -18,18 +21,21 @@ public class No {
 	private String ip;
 	private VetorDistancia vetorDistancia;
 	private ArrayList<DescritorNo> vizinhos;
-	private ArrayList<DescritorNo> ativos;
 	private HashMap<Integer, VetorDistancia> vetoresDistancia;
 	private Servidor servidor;
 	private HashMap<Integer, Integer> distancias;
 	Pinger pinger;
 
 	/**
-	 * Construtor da classe No. Recebe o identificador, a porta e o endereço IP do
-	 * roteador
-	 * @param id	Identificador do roteador
-	 * @param port	Porta do roteador
-	 * @param ip	A String representando o endereço IP
+	 * Construtor da classe No. Recebe o identificador, a porta e o endereço IP
+	 * do roteador
+	 * 
+	 * @param id
+	 *            Identificador do roteador
+	 * @param port
+	 *            Porta do roteador
+	 * @param ip
+	 *            A String representando o endereço IP
 	 * @throws SocketException
 	 */
 	public No(int id, int port, String ip) throws SocketException {
@@ -39,7 +45,6 @@ public class No {
 		this.vetorDistancia = new VetorDistancia();
 		vetoresDistancia = new HashMap<Integer, VetorDistancia>();
 		this.vizinhos = new ArrayList<DescritorNo>();
-		this.ativos = new ArrayList<DescritorNo>();
 		this.servidor = new Servidor(port, this);
 		this.distancias = new HashMap<Integer, Integer>();
 		this.pinger = new Pinger(this);
@@ -47,15 +52,13 @@ public class No {
 		this.distancias.put(id, 0);
 		for (String identificador : GerenciadorDeArquivos.getDados().keySet()) {
 			if (Integer.parseInt(identificador) != this.id) {
-				vetorDistancia
-						.adicionar(new VetorPar(
-								Integer.parseInt(identificador), GerenciadorDeArquivos
-										.getDiametro() + 1));
+				vetorDistancia.adicionar(new VetorPar(Integer
+						.parseInt(identificador), GerenciadorDeArquivos
+						.getDiametro() + 1));
 			}
 		}
 	}
 
-	
 	public void atualizarHistorico(VetorDistancia dv, int fonte) {
 		vetoresDistancia.remove(fonte);
 		vetoresDistancia.put(fonte, dv);
@@ -81,17 +84,25 @@ public class No {
 									+ toAdd.getDistancia());
 							if (toAdd.getDistancia() > GerenciadorDeArquivos
 									.getDiametro()) {
-								toAdd
-										.setDistancia(GerenciadorDeArquivos.getDiametro() + 1);
+								toAdd.setDistancia(GerenciadorDeArquivos
+										.getDiametro() + 1);
 							}
 							novoVetor.adicionar(toAdd);
 						} else {
 							VetorPar par = porNo.get(j);
 							VetorPar par2 = novoVetor.getParPorID(par.getId());
-							if(par2.getId() == par.getId()) {
-								if((par.getDistancia()+distancias.get(vetoresDistancia.keySet().toArray()[i])) < par2.getDistancia()) {
-									if (par.getDistancia()+distancias.get(vetoresDistancia.keySet().toArray()[i]) > GerenciadorDeArquivos.getDiametro()) {
-										novoVetor.setDistanciaPorID(par2.getId(), GerenciadorDeArquivos.getDiametro());
+							if (par2.getId() == par.getId()) {
+								if ((par.getDistancia() + distancias
+										.get(vetoresDistancia.keySet()
+												.toArray()[i])) < par2
+										.getDistancia()) {
+									if (par.getDistancia()
+											+ distancias.get(vetoresDistancia
+													.keySet().toArray()[i]) > GerenciadorDeArquivos
+											.getDiametro()) {
+										novoVetor.setDistanciaPorID(par2
+												.getId(), GerenciadorDeArquivos
+												.getDiametro());
 									} else {
 										novoVetor.setDistanciaPorID(par2
 												.getId(), par.getDistancia()
@@ -109,7 +120,10 @@ public class No {
 		}
 		if (vetorAlterado(novoVetor)) {
 			vetorDistancia = novoVetor;
-			System.out.println("Novo vetor de distancia1: "
+			SimpleDateFormat df = new SimpleDateFormat(
+					"'['dd/MM/yyyy '-' HH:mm:ss']'");
+			System.out.print(df.format(new Date(System.currentTimeMillis())));
+			System.out.println(" Novo vetor de distancia: "
 					+ this.vetorDistancia.outputString());
 			this.notificarVetor();
 		}
@@ -117,17 +131,21 @@ public class No {
 
 	/**
 	 * Remove elemento com o Identificador fornecido do vetor distância
-	 * @param id	Identificador do elemento a ser removido
+	 * 
+	 * @param id
+	 *            Identificador do elemento a ser removido
 	 */
 	public void removerElemento(int id) {
 		vetoresDistancia.remove(id);
 	}
 
 	/**
-	 * Identifica se o vetor distância deste No foi alterado em comparação com
-	 * o vetor passado como parâmetro.
-	 * @param novo	Vetor a ser comparado com o atual
-	 * @return		True caso vetor atual seja diferente do recebido
+	 * Identifica se o vetor distância deste No foi alterado em comparação com o
+	 * vetor passado como parâmetro.
+	 * 
+	 * @param novo
+	 *            Vetor a ser comparado com o atual
+	 * @return True caso vetor atual seja diferente do recebido
 	 */
 	public boolean vetorAlterado(VetorDistancia novo) {
 		int controle = 0;
@@ -148,8 +166,10 @@ public class No {
 
 	/**
 	 * Identifica se o No com o ID fornecido é vizinho deste
-	 * @param id	Identificador do No a ser verificado
-	 * @return		True caso o ID fornecido esteja na lista de vizinhos deste No
+	 * 
+	 * @param id
+	 *            Identificador do No a ser verificado
+	 * @return True caso o ID fornecido esteja na lista de vizinhos deste No
 	 */
 	public boolean ehVizinho(int id) {
 		for (DescritorNo no : this.vizinhos) {
@@ -166,6 +186,10 @@ public class No {
 	 */
 	public void notificarVetor() {
 		for (DescritorNo no : this.vizinhos) {
+			SimpleDateFormat df = new SimpleDateFormat(
+					"'['dd/MM/yyyy '-' HH:mm:ss']'");
+			System.out.print(df.format(new Date(System.currentTimeMillis())));
+			System.out.println(" Enviando vetor para " + no.getId());
 			String nodeIp = no.getIp();
 			int nodePort = no.getPorta();
 			try {
@@ -193,52 +217,45 @@ public class No {
 	}
 
 	/**
-	 * Adiciona o No passado como parâmentro para a lista de vizinhos deste No e adiciona
-	 * a distância entre eles à lista de distâncias
-	 * @param no		O DescritorNo vizinho a ser adicionado
-	 * @param distancia	A distância entre este No e o No vizinho
+	 * Adiciona o No passado como parâmentro para a lista de vizinhos deste No e
+	 * adiciona a distância entre eles à lista de distâncias
+	 * 
+	 * @param no
+	 *            O DescritorNo vizinho a ser adicionado
+	 * @param distancia
+	 *            A distância entre este No e o No vizinho
 	 */
 	public void adicionarVizinho(DescritorNo no, int distancia) {
 		this.distancias.put(no.getId(), distancia);
 		this.vizinhos.add(no);
 		this.pinger.adicionarNo(no);
+		SimpleDateFormat df = new SimpleDateFormat(
+				"'['dd/MM/yyyy '-' HH:mm:ss']'");
+		System.out.print(df.format(new Date(System.currentTimeMillis())));
 	}
 
 	/**
-	 * Atualiza o vetor distancia deste no a partir do vetor do vizinho
-	 * @param vetorNovo	Novo vetor do vizinho
-	 * @param idFonte	Identificador do vizinho
-	 */
-	public void atualizarVizinho(VetorDistancia vetorNovo, int idFonte) {
-		if (vetorDistancia.mesclar(vetorNovo, idFonte, distancias.get(idFonte),
-				this)) {
-			System.out.println("Novo vetor distancia: " + vetorDistancia);
-			this.notificarVetor();
-		}
-	}
-
-	/**
-	 * Ativa o No passado como parametro
-	 * @param no	No para ser ativado
+	 * Ativa o No passado como parametro, atualizando sua distância para a
+	 * distância do enlace direto. O No deve ser vizinho.
+	 * 
+	 * @param no
+	 *            No vizinho a ser ativado
 	 */
 	public void ativarNo(DescritorNo no) {
 		VetorPar par = this.vetorDistancia.getParPorID(no.getId());
 		if (par.getDistancia() > GerenciadorDeArquivos.getDiametro()) {
 			this.vetorDistancia.getParPorID(par.getId()).setDistancia(
 					this.distancias.get(no.getId()));
-			System.out.println("Novo vetor de distancia4: "
-					+ this.vetorDistancia.outputString());
 			this.notificarVetor();
-		}
-		if (!this.ativos.contains(no)) {
-			this.ativos.add(no);
 		}
 	}
 
 	/**
 	 * Retorna a distância deste No para o No com o ID passado
-	 * @param id	Identificador do No ao qual se quer saber a distancia
-	 * @return		Distancia entre este no e o No com o ID recebido
+	 * 
+	 * @param id
+	 *            Identificador do No ao qual se quer saber a distancia
+	 * @return Distancia entre este no e o No com o ID recebido
 	 */
 	public int getDistancia(int id) {
 		return this.distancias.get(id);
