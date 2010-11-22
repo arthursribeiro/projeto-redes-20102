@@ -142,5 +142,21 @@ public class VetorDistancia {
 		}
 		return result;
 	}
+	
+	public String outputString() {
+		String result = "";
+		for (int i = 0; i < this.size(); i++) {
+			VetorPar par = this.lista.get(i);
+			if (par.getDistancia() > GerenciadorDeArquivos.getDiametro()) {
+				result += "<" + par.getId() + ";INALCANCAVEL>";
+			} else {
+				result += par;
+			}
+			if (i < this.size() - 1) {
+				result += ",";
+			}
+		}
+		return result;
+	}
 
 }
