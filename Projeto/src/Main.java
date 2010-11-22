@@ -29,8 +29,9 @@ public class Main {
 	 * @param id
 	 *            Identificador do nó a ser criado
 	 * @return Nó criado
+	 * @throws Exception Caso algo dê errado
 	 */
-	public No criarNo(int id) {
+	public No criarNo(int id) throws Exception {
 		No no = null;
 		boolean valido = false;
 		for (String chave : GerenciadorDeArquivos.getDados().keySet()) {
@@ -47,12 +48,12 @@ public class Main {
 				System.out.println("Criou socket na porta: " + porta);
 				return no;
 			} catch (SocketException e) {
-				System.out.println("Nao conseguiu socket UDP na porta: "
-						+ porta + ". Ja esta criado?");
+				throw new Exception("Nao conseguiu socket UDP na porta: "
+						+ porta + ". Porta provavelmente em uso. Abortando programa");
 			}
 		}
 		if (!valido)
-			System.out.println("Identificador invalido, tente outro.");
+			throw new Exception("Identificador invalido, tente outro.");
 		return no;
 	}
 
@@ -72,18 +73,18 @@ public class Main {
 				str = in.readLine();
 				String[] splitStr = str.split(" ");
 				if (Integer.parseInt(splitStr[0]) == no.getId()) {
-					DescritorNo desc = new DescritorNo(Integer
-							.parseInt(splitStr[1]), GerenciadorDeArquivos
-							.getDados().get(splitStr[1])[1], Integer
-							.parseInt(GerenciadorDeArquivos.getDados().get(
-									splitStr[1])[0]));
+					DescritorNo desc = new DescritorNo(
+							Integer.parseInt(splitStr[1]),
+							GerenciadorDeArquivos.getDados().get(splitStr[1])[1],
+							Integer.parseInt(GerenciadorDeArquivos.getDados()
+									.get(splitStr[1])[0]));
 					no.adicionarVizinho(desc, Integer.parseInt(splitStr[2]));
 				} else if (Integer.parseInt(splitStr[1]) == no.getId()) {
-					DescritorNo desc = new DescritorNo(Integer
-							.parseInt(splitStr[0]), GerenciadorDeArquivos
-							.getDados().get(splitStr[0])[1], Integer
-							.parseInt(GerenciadorDeArquivos.getDados().get(
-									splitStr[0])[0]));
+					DescritorNo desc = new DescritorNo(
+							Integer.parseInt(splitStr[0]),
+							GerenciadorDeArquivos.getDados().get(splitStr[0])[1],
+							Integer.parseInt(GerenciadorDeArquivos.getDados()
+									.get(splitStr[0])[0]));
 					no.adicionarVizinho(desc, Integer.parseInt(splitStr[2]));
 				}
 			}
@@ -95,8 +96,9 @@ public class Main {
 	 * Início da execução do Programa. Os arquivos enlaces.config e
 	 * roteador.config são lidos e é perguntado qual roteador deseja-se
 	 * inicializar.
+	 * @throws IOException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		Main m = new Main();
 		GerenciadorDeArquivos.construirDistancia();
 		GerenciadorDeArquivos.construirMapa();
@@ -108,7 +110,15 @@ public class Main {
 			System.out
 					.print("Por favor, insira o numero do ID do roteador desejado: ");
 			id = sc.nextInt();
-			No no = m.criarNo(id);
+			No no = null;
+			try {
+				no = m.criarNo(id);
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				System.out.println("Aperte enter para sair");
+				System.in.read();
+				System.exit(1);
+			}
 			m.adicionarVizinhos(no);
 			no.start();
 		}
