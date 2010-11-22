@@ -212,6 +212,11 @@ public class No {
 	 * Inicia o servidor e o pinger
 	 */
 	public void start() {
+		SimpleDateFormat df = new SimpleDateFormat(
+				"'['dd/MM/yyyy '-' HH:mm:ss']'");
+		System.out.print(df.format(new Date(System.currentTimeMillis())));
+		System.out.println(" Novo vetor de distancia: "
+				+ this.vetorDistancia.outputString());
 		this.servidor.start();
 		this.pinger.start();
 	}
@@ -229,9 +234,6 @@ public class No {
 		this.distancias.put(no.getId(), distancia);
 		this.vizinhos.add(no);
 		this.pinger.adicionarNo(no);
-		SimpleDateFormat df = new SimpleDateFormat(
-				"'['dd/MM/yyyy '-' HH:mm:ss']'");
-		System.out.print(df.format(new Date(System.currentTimeMillis())));
 	}
 
 	/**
@@ -246,6 +248,11 @@ public class No {
 		if (par.getDistancia() > GerenciadorDeArquivos.getDiametro()) {
 			this.vetorDistancia.getParPorID(par.getId()).setDistancia(
 					this.distancias.get(no.getId()));
+			SimpleDateFormat df = new SimpleDateFormat(
+					"'['dd/MM/yyyy '-' HH:mm:ss']'");
+			System.out.print(df.format(new Date(System.currentTimeMillis())));
+			System.out.println(" Novo vetor de distancia: "
+					+ this.vetorDistancia.outputString());
 			this.notificarVetor();
 		}
 	}
