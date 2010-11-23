@@ -29,7 +29,8 @@ public class Main {
 	 * @param id
 	 *            Identificador do nó a ser criado
 	 * @return Nó criado
-	 * @throws Exception Caso algo dê errado
+	 * @throws Exception
+	 *             Caso algo dê errado
 	 */
 	public No criarNo(int id) throws Exception {
 		No no = null;
@@ -49,7 +50,8 @@ public class Main {
 				return no;
 			} catch (SocketException e) {
 				throw new Exception("Nao conseguiu socket UDP na porta: "
-						+ porta + ". Porta provavelmente em uso. Abortando programa");
+						+ porta
+						+ ". Porta provavelmente em uso. Abortando programa");
 			}
 		}
 		if (!valido)
@@ -73,18 +75,18 @@ public class Main {
 				str = in.readLine();
 				String[] splitStr = str.split(" ");
 				if (Integer.parseInt(splitStr[0]) == no.getId()) {
-					DescritorNo desc = new DescritorNo(
-							Integer.parseInt(splitStr[1]),
-							GerenciadorDeArquivos.getDados().get(splitStr[1])[1],
-							Integer.parseInt(GerenciadorDeArquivos.getDados()
-									.get(splitStr[1])[0]));
+					DescritorNo desc = new DescritorNo(Integer
+							.parseInt(splitStr[1]), GerenciadorDeArquivos
+							.getDados().get(splitStr[1])[1], Integer
+							.parseInt(GerenciadorDeArquivos.getDados().get(
+									splitStr[1])[0]));
 					no.adicionarVizinho(desc, Integer.parseInt(splitStr[2]));
 				} else if (Integer.parseInt(splitStr[1]) == no.getId()) {
-					DescritorNo desc = new DescritorNo(
-							Integer.parseInt(splitStr[0]),
-							GerenciadorDeArquivos.getDados().get(splitStr[0])[1],
-							Integer.parseInt(GerenciadorDeArquivos.getDados()
-									.get(splitStr[0])[0]));
+					DescritorNo desc = new DescritorNo(Integer
+							.parseInt(splitStr[0]), GerenciadorDeArquivos
+							.getDados().get(splitStr[0])[1], Integer
+							.parseInt(GerenciadorDeArquivos.getDados().get(
+									splitStr[0])[0]));
 					no.adicionarVizinho(desc, Integer.parseInt(splitStr[2]));
 				}
 			}
@@ -96,32 +98,33 @@ public class Main {
 	 * Início da execução do Programa. Os arquivos enlaces.config e
 	 * roteador.config são lidos e é perguntado qual roteador deseja-se
 	 * inicializar.
-	 * @throws IOException 
+	 * 
+	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
 		Main m = new Main();
 		GerenciadorDeArquivos.construirDistancia();
 		GerenciadorDeArquivos.construirMapa();
 		int id;
-		if (args.length > 1) {
-			id = Integer.parseInt(args[1]);
+		if (args.length > 0) {
+			id = Integer.parseInt(args[0]);
 		} else {
 			Scanner sc = new Scanner(System.in);
 			System.out
 					.print("Por favor, insira o numero do ID do roteador desejado: ");
 			id = sc.nextInt();
-			No no = null;
-			try {
-				no = m.criarNo(id);
-			} catch (Exception e) {
-				System.out.println(e.getMessage());
-				System.out.println("Aperte enter para sair");
-				System.in.read();
-				System.exit(1);
-			}
-			m.adicionarVizinhos(no);
-			no.start();
 		}
+		No no = null;
+		try {
+			no = m.criarNo(id);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			System.out.println("Aperte enter para sair");
+			System.in.read();
+			System.exit(1);
+		}
+		m.adicionarVizinhos(no);
+		no.start();
 	}
 
 }
