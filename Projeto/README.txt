@@ -15,4 +15,4 @@ que se encontra o arquivo ProjetoRedes-Grupo10.jar. Os arquivos devem ter as seg
 Deve-se executar o programa e fornecer o ID do Nó o qual deseja-se simular com aquele processo.
 
 Para criar uma nova execução do programa basta na linha de comando ir para a pasta onde está localizado
-o arquivo ProjetoRedes-Grupo10.jar e digitar: java -jar ProjetoRedes-Grupo10.jar
+o arquivo ProjetoRedes-Grupo10.jar e digitar: java -jar projeto-redes-20102_Grupo-10.jar
